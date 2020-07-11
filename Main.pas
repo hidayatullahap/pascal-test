@@ -519,36 +519,47 @@ begin
   writeLn();
 end;
 
-procedure switchArr(var a, b: Integer);
+type
+  TItemBubbleSort = integer;
+
+procedure swap(var a, b: TItemBubbleSort);
 var
-  c: Integer;
+  temp: TItemBubbleSort;
 begin
-  c := a;
+  temp := a;
   a := b;
-  b := c;
+  b := temp;
 end;
 
-procedure sortMin(numbers: Array of Integer);
+// sort option 0 low to high, else high to low
+procedure sort(var numbers: array of TItemBubbleSort; option: Integer);
 var
-  i: integer;
-  switchExist: boolean;
+  n, newn, i: integer;
 begin
+  n := high(numbers);
   repeat
-    switchExist := false;
-    for i:= Low(numbers) to High(numbers) - 1 do
+    newn := 0;
+    for i := 1 to n do
     begin
-      if numbers[i] > numbers[i + 1] then
+      if (option = 0) then
       begin
-        writeLn('numbers[i]', numbers[i]);
-        switchArr(numbers[i], numbers[i + 1]);
-        switchExist := true;
+        if numbers[i - 1] > numbers[i] then
+        begin
+          swap(numbers[i - 1], numbers[i]);
+          newn := i;
+        end;
+      end
+      else
+      begin
+        if numbers[i - 1] < numbers[i] then
+        begin
+          swap(numbers[i - 1], numbers[i]);
+          newn := i;
+        end;
       end;
     end;
-  until switchExist = false;
-end;
-
-procedure sortMax(numbers: Array of Integer);
-begin
+    n := newn;
+  until n = 0;
 end;
 
 
@@ -564,10 +575,10 @@ begin
   writeln('                 Data Pengiriman Paket Setelah Diurutkan');
   writeln('                 ------------------------------');
   writeln('       Total Harga Pengiriman Paket dari KECIL ke BESAR : ');
-  sortMin(packetTotals);
+  sort(packetTotals, 0);
   showArray(packetTotals);
   writeln('       Total Harga Pengiriman Paket dari Besar ke Kecil : ');
-  sortMax(packetTotals);
+  sort(packetTotals, 1);
   showArray(packetTotals);
   writeln;
   readln;

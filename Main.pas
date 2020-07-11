@@ -98,9 +98,7 @@ var
   isFound: boolean;
 
 begin
-  gotoxy(2, 2);
   write('masukkan total : ');
-  gotoxy(18, 2);
   readln(inputSearch);
   ia := 1;
   length := n;
@@ -158,7 +156,6 @@ begin
   end
   else
   begin
-    gotoxy(30, 10);
     write('pencarian berat: ', inputSearch, ' tidak ditemukan');
   end;
 end;
@@ -494,8 +491,8 @@ procedure initPacketTotalArray();
 begin
   SetLength(packetTotals, recordLength);
   for i :=1 to recordLength do
-    with packets[i] do
-      packetTotals[i] := packets[i].total;
+    with packets[i - 1] do
+      packetTotals[i - 1] := packets[i].total;
 end;
 
 procedure showPackages();
@@ -522,25 +519,35 @@ begin
   writeLn();
 end;
 
-procedure sortMin(numbers: Array of Integer; size: Integer);
+procedure switchArr(var a, b: Integer);
 var
-  i, j, index: Integer;
-
+  c: Integer;
 begin
-  for i := 2 to size - 1 do
-  begin
-    index := numbers[i];
-    j := i;
-    while ((j > 1) AND (numbers[j - 1] > index)) do
-    begin
-      numbers[j] := numbers[j - 1];
-      j := j - 1;
-    end;
-    numbers[j] := index;
-  end;
+  c := a;
+  a := b;
+  b := c;
 end;
 
-procedure sortMax();
+procedure sortMin(numbers: Array of Integer);
+var
+  i: integer;
+  switchExist: boolean;
+begin
+  repeat
+    switchExist := false;
+    for i:= Low(numbers) to High(numbers) - 1 do
+    begin
+      if numbers[i] > numbers[i + 1] then
+      begin
+        writeLn('numbers[i]', numbers[i]);
+        switchArr(numbers[i], numbers[i + 1]);
+        switchExist := true;
+      end;
+    end;
+  until switchExist = false;
+end;
+
+procedure sortMax(numbers: Array of Integer);
 begin
 end;
 
@@ -557,10 +564,11 @@ begin
   writeln('                 Data Pengiriman Paket Setelah Diurutkan');
   writeln('                 ------------------------------');
   writeln('       Total Harga Pengiriman Paket dari KECIL ke BESAR : ');
-  sortMin(packetTotals, recordLength);
+  sortMin(packetTotals);
   showArray(packetTotals);
   writeln('       Total Harga Pengiriman Paket dari Besar ke Kecil : ');
-  sortMax();
+  sortMax(packetTotals);
+  showArray(packetTotals);
   writeln;
   readln;
 end;

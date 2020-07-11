@@ -68,15 +68,16 @@ begin
   GoToXY(15, 24);
   writeln('|            3. Cari berdasarkan Biaya                    |');
   GoToXY(15, 25);
-  writeln('|            4. KELUAR                                    |');
+  writeln('|            4. Pengurutan daftar biaya                   |');
   GoToXY(15, 26);
-  writeln('|=========================================================|');
+  writeln('|            5. KELUAR                                    |');
   GoToXY(15, 27);
-  writeln('                                                           ');
+  writeln('|=========================================================|');
   GoToXY(15, 28);
-  write('                     Pilih Menu [1..4]!:');
+  writeln('                                                           ');
+  GoToXY(15, 29);
+  write('                     Pilih Menu [1..5]!:');
   readln(pil);
-
   writeln;
   while (pil < 0) or (pil > 4) do
   begin
@@ -482,37 +483,116 @@ begin
   writeln;
   writeln('                  == Tekan ENTER untuk LANJUT ==       ');
   readln;
+end;
 
+var
+  pkg: paket;
+  recordLength: Integer;
+  packetTotals: array of Integer;
+
+procedure initPacketTotalArray();
+begin
+  SetLength(packetTotals, recordLength);
+  for i :=1 to recordLength do
+    with packets[i] do
+      packetTotals[i] := packets[i].total;
+end;
+
+procedure showPackages();
+begin
+  write('Biaya Paket: ');
+  for i :=1 to recordLength do
+  begin
+    with packets[i] do
+      pkg := packets[i];
+    write('paket no.', i, ': ', pkg.total, ' ');
+  end;
+end;
+
+var
+  arrPkg: Integer;
+
+procedure showArray(arrPkgs: array of Integer);
+begin
+  write('Biaya Paket: ');
+  for arrPkg in arrPkgs do
+  begin
+    write(arrPkg, ', ');
+  end;
+  writeLn();
+end;
+
+procedure sortMin(numbers: Array of Integer; size: Integer);
+var
+  i, j, index: Integer;
+
+begin
+  for i := 2 to size - 1 do
+  begin
+    index := numbers[i];
+    j := i;
+    while ((j > 1) AND (numbers[j - 1] > index)) do
+    begin
+      numbers[j] := numbers[j - 1];
+      j := j - 1;
+    end;
+    numbers[j] := index;
+  end;
+end;
+
+procedure sortMax();
+begin
+end;
+
+
+procedure sorting_paket;
+begin
+  recordLength := n;
+  initPacketTotalArray();
+  writeln('                DATA PENGIRIMAN PAKET SEBELUM DIURUTKAN');
+  writeln('                ---------------------------------------');
+  showPackages();
+  writeln;
+  writeln;
+  writeln('                 Data Pengiriman Paket Setelah Diurutkan');
+  writeln('                 ------------------------------');
+  writeln('       Total Harga Pengiriman Paket dari KECIL ke BESAR : ');
+  sortMin(packetTotals, recordLength);
+  showArray(packetTotals);
+  writeln('       Total Harga Pengiriman Paket dari Besar ke Kecil : ');
+  sortMax();
+  writeln;
+  readln;
 end;
 
 {program utama}
 begin
   repeat
-    clrscr;
     menu(pil);
     case (pil) of
       1:
       begin
-        clrscr;
         daftar_kota;
         readln;
       end;
       2:
       begin
-        clrscr;
         isidata;
         readln;
       end;
       3:
       begin
-        clrscr;
         uruttotal;
         cari_total;
         readln;
       end;
       4:
       begin
-        clrscr;
+        sorting_paket;
+        readln;
+      end;
+      5:
+      begin
         keluar;
         readln;
       end;

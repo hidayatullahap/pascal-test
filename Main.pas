@@ -8,11 +8,11 @@ type
     berat, biaya, total: integer;
   end;
 
-  z = array [1..100] of paket;
+  packetRecord = array [1..100] of paket;
 const
   adm = 5000;
 var
-  a: z;
+  packets: packetRecord;
   n, i, m, p, pil: integer;
 
 procedure menu(var pil: integer);
@@ -93,102 +93,72 @@ end;
 
 procedure cari_total;
 var
-  i, ia, ib, j, v, w, cari: integer;
-  ketemu: boolean;
+  numbering, ia, length, j, v, inputSearch, searchIndex: integer;
+  isFound: boolean;
 
 begin
   gotoxy(2, 2);
   write('masukkan total : ');
   gotoxy(18, 2);
-  readln(cari);
+  readln(inputSearch);
   ia := 1;
-  ib := n;
-  ketemu := false;
-  while ((not ketemu) and (ia <= ib)) do
+  length := n;
+  isFound := false;
+  searchIndex := 0;
+
+  while ((not isFound) and (ia <= length)) do
   begin
-    j := (ia + ib) div 2;
-    if (a[j].total = cari)
+    j := (ia + length) div 2;
+    WriteLn('packet total: ', packets[j].total);
+    if (packets[j].total = inputSearch)
     then
-      ketemu := true
+      isFound := true
     else
-      if (a[j].total < cari)
+      if (packets[j].total < inputSearch)
       then
         ia := j + 1
       else
-        ib := j - 1;
+        length := j - 1;
   end;
-  if (ketemu) then
+  if (isFound) then
   begin
-    i := 1;
-    v := j;
-    w := j + 1;
-    while (cari = a[v].total) do
-    begin
-      GotoXY(1, 4);
-      writeln ('-------------------------------------------------------------------------------------------------------------------------------------|');
-      gotoxy(1, 5);
-      writeln ('| No |  No.Paket  |  Berat   |      Nama Penerima     |       Tujuan       |       Kota       |       Biaya      | Jenis Pengiriman  |');
-      gotoxy(1, 6);
-      writeln ('-------------------------------------------------------------------------------------------------------------------------------------|');
-      gotoxy(1, 6 + i);
-      writeln('|    |            |          |                        |                    |                  |                  |                   |');
-      gotoxy(2, 6 + i);
-      writeln(a[i].no);
-      gotoxy(8, 6 + i);
-      writeln(a[i].np);
-      gotoxy(23, 6 + i);
-      writeln(a[i].berat);
-      gotoxy(39, 6 + i);
-      writeln(a[i].nama);
-      gotoxy(63, 6 + i);
-      writeln(a[i].tujuan);
-      gotoxy(81, 6 + i);
-      writeln(a[i].kota);
-      gotoxy(99, 6 + i);
-      writeln(a[i].total);
-      gotoxy(117, 6 + i);
-      writeln(a[i].kirim);
-      i := i + 1;
-      v := v - 1;
-      gotoxy(1, 6 + i);
-      write   ('-------------------------------------------------------------------------------------------------------------------------------------');
-    end;
-    while (cari = a[w].total) do
-    begin
-      GotoXY(1, 4);
-      writeln ('-------------------------------------------------------------------------------------------------------------------------------------|');
-      gotoxy(1, 5);
-      writeln ('| No |  No.Paket  |  Berat   |      Nama Penerima     |       Tujuan       |       Kota       |       Biaya      | Jenis Pengiriman  |');
-      gotoxy(1, 6);
-      writeln ('-------------------------------------------------------------------------------------------------------------------------------------|');
-      gotoxy(1, 6 + i);
-      writeln('|    |            |          |                        |                    |                  |                  |                   |');
-      gotoxy(2, 6 + i);
-      writeln(a[i].no);
-      gotoxy(8, 6 + i);
-      writeln(a[i].np);
-      gotoxy(23, 6 + i);
-      writeln(a[i].berat);
-      gotoxy(39, 6 + i);
-      writeln(a[i].nama);
-      gotoxy(63, 6 + i);
-      writeln(a[i].tujuan);
-      gotoxy(81, 6 + i);
-      writeln(a[i].kota);
-      gotoxy(99, 6 + i);
-      writeln(a[i].total);
-      gotoxy(117, 6 + i);
-      writeln(a[i].kirim);
-      i := i + 1;
-      w := w + 1;
-      gotoxy(1, 6 + i);
-      write   ('-------------------------------------------------------------------------------------------------------------------------------------');
-    end;
+    numbering := 1;
+    searchIndex := j;
+  begin
+    GotoXY(1, 4);
+    writeln ('-------------------------------------------------------------------------------------------------------------------------------------|');
+    gotoxy(1, 5);
+    writeln ('| No |  No.Paket  |  Berat   |      Nama Penerima     |       Tujuan       |       Kota       |       Biaya      | Jenis Pengiriman  |');
+    gotoxy(1, 6);
+    writeln ('-------------------------------------------------------------------------------------------------------------------------------------|');
+    gotoxy(1, 6 + numbering);
+    writeln('|    |            |          |                        |                    |                  |                  |                   |');
+    gotoxy(2, 6 + numbering);
+    writeln(packets[searchIndex].no);
+    gotoxy(8, 6 + numbering);
+    writeln(packets[searchIndex].np);
+    gotoxy(23, 6 + numbering);
+    writeln(packets[searchIndex].berat);
+    gotoxy(39, 6 + numbering);
+    writeln(packets[searchIndex].nama);
+    gotoxy(63, 6 + numbering);
+    writeln(packets[searchIndex].tujuan);
+    gotoxy(81, 6 + numbering);
+    writeln(packets[searchIndex].kota);
+    gotoxy(99, 6 + numbering);
+    writeln(packets[searchIndex].total);
+    gotoxy(117, 6 + numbering);
+    writeln(packets[searchIndex].kirim);
+    numbering := numbering + 1;
+    v := v - 1;
+    gotoxy(1, 6 + numbering);
+    write   ('-------------------------------------------------------------------------------------------------------------------------------------');
+  end;
   end
   else
   begin
     gotoxy(30, 10);
-    write('total ', cari, ' tidak ada ');
+    write('pencarian berat: ', inputSearch, ' tidak ditemukan');
   end;
 end;
 
@@ -202,45 +172,45 @@ begin
     min := i;
     for j:= (i + 1) to n do
     begin
-      if (a[j].total < a[min].total)
+      if (packets[j].total < packets[min].total)
       then
       begin
         min := j
       end;
     end;
-    temp := a[min].no;
-    a[min].no := a[i].no;
-    a[i].no := temp;
+    temp := packets[min].no;
+    packets[min].no := packets[i].no;
+    packets[i].no := temp;
 
-    temp := a[min].np;
-    a[min].np := a[i].np;
-    a[i].np := temp;
+    temp := packets[min].np;
+    packets[min].np := packets[i].np;
+    packets[i].np := temp;
 
-    temp1 := a[min].berat;
-    a[min].berat := a[i].berat;
-    a[i].berat := temp1;
+    temp1 := packets[min].berat;
+    packets[min].berat := packets[i].berat;
+    packets[i].berat := temp1;
 
-    temp := a[min].nama;
-    a[min].nama := a[i].nama;
-    a[i].nama := temp;
+    temp := packets[min].nama;
+    packets[min].nama := packets[i].nama;
+    packets[i].nama := temp;
 
-    temp := a[min].tujuan;
-    a[min].tujuan := a[i].tujuan;
-    a[i].tujuan := temp;
-
-
-    temp := a[min].kota;
-    a[min].kota := a[i].kota;
-    a[i].kota := temp;
-
-    temp1 := a[min].total;
-    a[min].total := a[i].total;
-    a[i].total := temp1;
+    temp := packets[min].tujuan;
+    packets[min].tujuan := packets[i].tujuan;
+    packets[i].tujuan := temp;
 
 
-    temp := a[min].kirim;
-    a[min].kirim := a[i].kirim;
-    a[i].kirim := temp;
+    temp := packets[min].kota;
+    packets[min].kota := packets[i].kota;
+    packets[i].kota := temp;
+
+    temp1 := packets[min].total;
+    packets[min].total := packets[i].total;
+    packets[i].total := temp1;
+
+
+    temp := packets[min].kirim;
+    packets[min].kirim := packets[i].kirim;
+    packets[i].kirim := temp;
 
 
   end;
@@ -355,8 +325,12 @@ begin
   for i :=1 to n do
   begin
     writeln ('Paket', i);
-    with a[i] do
+    with packets[i] do
     begin
+      write ('Jenis Pengiriman :');
+      readln(kirim);
+      write ('Berat            :');
+      readln(Berat);
       write ('No               :');
       readln(No);
       write ('No.Paket         :');
@@ -365,16 +339,12 @@ begin
       readln(Npg);
       write ('Asal Pengirim    :');
       readln(asal);
-      write ('Berat            :');
-      readln(Berat);
       write ('Nama Penerima    :');
       readln(Nama);
       write ('Tujuan           :');
       readln(Tujuan);
       write ('Alamat           :');
       readln(kota);
-      write ('Jenis Pengiriman :');
-      readln(kirim);
     end;
     writeln;
   end;
@@ -383,10 +353,8 @@ begin
   clrscr;
   writeln;
 
-
   m := 5;
   p := 6;
-
 
   textcolor(blue);
   GotoXY(40, 1);
@@ -407,7 +375,7 @@ begin
     GotoXY(1, p);
     writeln     ('|    |            |          |                        |                    |                            |                  |                   |');
 
-    with a[i] do
+    with packets[i] do
     begin
 
       if (berat <= 2) and (kirim = 'express') then
@@ -452,8 +420,6 @@ begin
                         end else begin
 
                         end;
-
-
       textcolor(blue);
       GotoXY(3, p);
       writeln (No);
